@@ -1,6 +1,6 @@
 ---
 name: git-commit
-description: 根据暂存区 git diff 生成 Conventional Commits 英文 subject（≤50 字符、说明部分不加标点），用 bash 代码块输出可复制的 git commit -m 命令。
+description: 根据暂存区 git diff 生成 Conventional Commits 英文 subject（严格 ≤50 字符，必须实际执行 echo -n "..." | wc -m 校验，失败必须改写到 ≤50），用 bash 代码块输出可复制的 git commit -m 命令。
 ---
 
 # 基于暂存区的提交信息（≤50 字符）
@@ -33,9 +33,25 @@ git diff --cached
 - **英文**，祈使语气，`type:` 后说明部分首字母小写；专有名词、缩写保持合理大小写。
 - message 须与 diff 中实际改动一致。
 
-### 3. 输出
+### 3. 字符数校验（强制）
 
-1. 给出完整一行 subject。
+**不可凭字符估算，必须实际执行** `echo -n` + `wc -m` 拿到精确的 Unicode 字符数（含 `type:`、冒号与空格）。
+
+示例：
+
+```bash
+echo -n "feat: show device model in lan discovery list" | wc -m
+```
+
+判定规则：
+
+- **结果 ≤ 50** → 进入下一步输出。
+- **结果 > 50** → **必须改写**到 ≤50 后再校验一次，重复直到满足为止；不得用"差不多"、"看起来刚好"等估算蒙混。
+- 若描述需精简，先削减修饰词、把缩写还原全称、必要时把 `type` 改成更窄的语义（如 `refactor` → `chore`）；仍超长则回到暂存区梳理更精确的语义边界。
+
+### 4. 输出
+
+1. 给出完整一行 subject，并附上 `echo -n "..." | wc -m` 的实测结果作为凭证。
 2. 使用 `bash` 代码块输出可复制命令：
 
 ```bash
