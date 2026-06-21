@@ -1,6 +1,6 @@
 ---
 name: git-commit
-description: 根据暂存区 git diff 生成 Conventional Commits 英文 subject（严格 ≤50 字符，必须实际执行 echo -n "..." | wc -m 校验，失败必须改写到 ≤50），用 bash 代码块输出可复制的 git commit -m 命令。
+description: 根据暂存区 git diff 生成 Conventional Commits 英文 subject（严格 ≤50 字符，必须按所在系统实际执行字数校验命令，失败必须改写到 ≤50），输出可复制的 git commit -m 命令。
 ---
 
 # 基于暂存区的提交信息（≤50 字符）
@@ -35,12 +35,20 @@ git diff --cached
 
 ### 3. 字符数校验（强制）
 
-**不可凭字符估算，必须实际执行** `echo -n` + `wc -m` 拿到精确的 Unicode 字符数（含 `type:`、冒号与空格）。
+**不可凭字符估算，必须按所在系统实际执行命令**拿到精确字符数（含 `type:`、冒号与空格）。
 
-示例：
+按系统选择：
+
+- **Linux / macOS / Git Bash**：
 
 ```bash
 echo -n "feat: show device model in lan discovery list" | wc -m
+```
+
+- **Windows PowerShell（系统自带）**：
+
+```powershell
+[System.Globalization.StringInfo]::new("feat: show device model in lan discovery list").LengthInTextElements
 ```
 
 判定规则：
@@ -51,8 +59,10 @@ echo -n "feat: show device model in lan discovery list" | wc -m
 
 ### 4. 输出
 
-1. 给出完整一行 subject，并附上 `echo -n "..." | wc -m` 的实测结果作为凭证。
-2. 使用 `bash` 代码块输出可复制命令：
+1. 给出完整一行 subject，并附上你本次实际使用的校验命令与实测结果作为凭证：
+	- Linux / macOS / Git Bash：`echo -n "..." | wc -m`
+	- Windows PowerShell：`[System.Globalization.StringInfo]::new("...").LengthInTextElements`
+2. 输出可复制的提交命令：
 
 ```bash
 git commit -m "feat: your subject here"
