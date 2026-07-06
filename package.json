@@ -1,7 +1,7 @@
 {
   "name": "@imba97/skills",
   "version": "1.0.0",
-  "packageManager": "pnpm@11.1.0",
+  "packageManager": "pnpm@11.10.0",
   "description": "My personal skills for AI",
   "author": "imba97",
   "license": "MIT",
@@ -15,8 +15,8 @@
     "lint": "eslint --cache --fix"
   },
   "devDependencies": {
-    "@antfu/eslint-config": "^9.0.0",
-    "eslint": "^10.3.0",
+    "@antfu/eslint-config": "^9.1.0",
+    "eslint": "^10.6.0",
     "jiti": "^2.7.0",
     "nano-staged": "^1.0.2",
     "simple-git-hooks": "^2.13.1",
