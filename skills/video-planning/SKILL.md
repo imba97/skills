@@ -1,6 +1,6 @@
 ---
 name: video-planning
-description: 通过八阶段「单次一问」式对话，把模糊想法梳理成可执行的视频拍摄与剪辑方案，含故事核心、钩子、大纲、分镜、拍摄清单、剪辑指引与封面 prompt。用于 vlog、知识分享、微剧情、情绪短片等策划场景。
+description: Eight-stage one-question dialogue turning a vague idea into an actionable video shoot & edit plan.
 ---
 
 # 通用视频创作引导

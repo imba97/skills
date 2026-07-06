@@ -1,6 +1,6 @@
 ---
 name: git-commit
-description: 根据暂存区 git diff 生成 Conventional Commits 英文 subject（严格 ≤50 字符，必须按所在系统实际执行字数校验命令，失败必须改写到 ≤50），输出可复制的 git commit -m 命令。
+description: Generate a Conventional Commits subject (≤50 chars, wc -m validated) from staged diff and output a commit command.
 ---
 
 # 基于暂存区的提交信息（≤50 字符）

@@ -1,6 +1,6 @@
 ---
 name: vite-plus-config
-description: Vite+ 库项目配置参考，按用户场景选择依赖外置、entry 设计、目录结构与 fmt 配置。
+description: Vite+ library config reference for dep externals, entry design, layout, and fmt per scenario.
 ---
 
 # Vite+ 配置参考（库项目）
@@ -35,11 +35,13 @@ description: Vite+ 库项目配置参考，按用户场景选择依赖外置、e
 可参考在 `vite.config.ts` 的 `pack` 中配置：
 
 ```ts
-pack: {
-  deps: {
-    neverBundle: ['monaco-editor']
+defineConfig({
+  pack: {
+    deps: {
+      neverBundle: ['monaco-editor']
+    }
   }
-}
+})
 ```
 
 说明：
@@ -54,10 +56,12 @@ pack: {
 示例：
 
 ```ts
-entry: {
-  index: 'src/index.ts',
-  other: 'src/other/index.ts'
-}
+defineConfig({
+  entry: {
+    index: 'src/index.ts',
+    other: 'src/other/index.ts'
+  }
+})
 ```
 
 默认建议：
@@ -78,9 +82,11 @@ entry: {
 在 `vite.config.ts` 中保持：
 
 ```ts
-fmt: {
-  singleQuote: true,
-  semi: false,
-  trailingComma: 'none'
-}
+defineConfig({
+  fmt: {
+    singleQuote: true,
+    semi: false,
+    trailingComma: 'none'
+  }
+})
 ```

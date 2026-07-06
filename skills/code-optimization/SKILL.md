@@ -1,6 +1,6 @@
 ---
 name: code-optimization
-description: 按优先级自动选定代码来源（用户指定 > 暂存区 > 工作区改动 > 全项目），梳理逻辑后从优雅性、性能、可靠性、设计模式与全局复用等维度列出可优化项（含原因与预计提升），用户确认后再改代码。用于「代码优化」「重构建议」「按 diff 优化」等先评审后动手的场景。
+description: Pick code scope, list refactor candidates with reasons and expected gains; edit only after user says go.
 disable-model-invocation: true
 ---
 
