@@ -9,7 +9,6 @@
 | 基于暂存区的提交信息 | `git-commit` | [`skills/git-commit/SKILL.md`](skills/git-commit/SKILL.md) | 根据暂存区 diff 生成 Conventional Commits 英文 subject（≤50 字符、说明部分不加多余标点），并用 `bash` 代码块输出 `git commit -m` 命令。 |
 | 代码优化 | `code-optimization` | [`skills/code-optimization/SKILL.md`](skills/code-optimization/SKILL.md) | 用 `git status` / `git diff HEAD`（或用户指定基线）梳理全部改动，从优雅性、性能、可靠性、模式与全局复用等维度列出待确认优化项（含原因与预计提升），用户勾选后再改代码。 |
 | 通用视频创作引导 | `video-planning` | [`skills/video-planning/SKILL.md`](skills/video-planning/SKILL.md) | 分阶段单次一问，把想法落成故事、分镜、拍摄清单与剪辑指引；终稿含发布提示与封面图 prompt。 |
-| AI-Native 面试实时应答器 | `ai-native-interview` | [`skills/ai-native-interview/SKILL.md`](skills/ai-native-interview/SKILL.md) | 输入面试官的提问，定位其考察的能力模块（Issues 写作、方案/PR Review、产品直觉、原型、系统思维、AI 驾驶），基于 AI-Native 招聘手册直接给出可照用的最优答案，并规避六项一票否决。 |
 | 发布前清单 | `publish-checklist` | [`skills/publish-checklist/SKILL.md`](skills/publish-checklist/SKILL.md) | 检查并自动修复前端依赖 `package.json` 的 `packageManager` / `repository` / `homepage` / `bugs` / `license`，避免 CI 因缺 pnpm 版本、npm 页面缺链接等元数据缺失而失败。 |
 
 ## 安装方式
