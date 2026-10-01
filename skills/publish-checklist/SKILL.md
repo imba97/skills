@@ -17,6 +17,15 @@ Please specify it by one of the following ways:
   - in the package.json with the key "devEngines.packageManager"
 ```
 
+或更隐蔽的双源冲突：
+
+```
+Error: Multiple versions of pnpm specified:
+  - version 12 in the GitHub Action config with the key "version"
+  - version pnpm@12.8.1 in the package.json with the key "packageManager"
+  Remove one of these versions to avoid version mismatch errors like ERR_PNPM_BAD_PM_VERSION
+```
+
 这类「工具链静默失败 / GitHub 页面缺信息 / npm 页面缺链接」的问题。
 
 **不适用**：
@@ -39,6 +48,7 @@ Please specify it by one of the following ways:
 | 6 | `author` | 建议 | 包页归属空白 | 字符串或 `{ "name", "email", "url" }` |
 | 7 | `engines.node` | 建议 | 用户装了错版本 Node 不会得到友好提示 | `"^18.0.0" \|\| ">=20"` 等 |
 | 8 | `files` | 可选 | 误把 `node_modules`、`.git`、源码全部发包 | `["dist"]` 等白名单 |
+| 9 | CI 与 manifest 一致性（`.github/workflows/*.yml` ↔ `package.json#packageManager`） | 强烈建议 | CI 用 `pnpm/action-setup` 同时在 workflow 设 `version` 又在 manifest 设 `packageManager` → `Multiple versions of pnpm specified` 报错直接挂 release | **二选一**：`workflow` 只声明 `uses: pnpm/action-setup@v4`（自动读 manifest）；或 manifest 不写 `packageManager` 而在 workflow 钉版本。**不要**两边都写 |
 
 > 本技能**当前版本**只对前 5 项（`packageManager` / `repository` / `homepage` / `bugs` / `license`）做"检查 + 自动修复"。其余项只报告、不改。
 
@@ -49,7 +59,8 @@ Please specify it by one of the following ways:
 1. 当前目录就是包根目录 → 直接读取 `./package.json`。
 2. 单仓多包（`packages/<name>`）→ 先问用户要检查哪一个包，或读取全部并分别报告。
 3. monorepo 工具脚本要发**根包** → 读取仓库根 `package.json`。
-4. 未来扩展到其它载体（如 `.npmrc`、CI 配置、`LICENSE` 文件等）时，按各自规则定位。
+4. **CI 一致性** → 扫描 `.github/workflows/*.yml`（或团队约定路径如 `.gitlab-ci.yml`），找 `pnpm/action-setup` / `actions/setup-node` 等显式声明包管理器版本的用法 — 见检查清单 #9。
+5. 未来扩展到其它载体（如 `.npmrc`、CI 配置、`LICENSE` 文件等）时，按各自规则定位。
 
 定位方式：
 
@@ -62,7 +73,7 @@ Please specify it by one of the following ways:
 
 ### 3. 逐项检查
 
-按「检查清单」表格中编号 1–5 的字段：
+按「检查清单」表格中编号 1–5（以及 #9 CI 一致性）的字段：
 
 - 字段**存在且值合法** → 该项 ✅
 - 字段**缺失或空字符串** → 该项 ❌ 缺失
@@ -75,6 +86,10 @@ Please specify it by one of the following ways:
 - `homepage`：合法 URL。
 - `license`：`string`（SPDX）或对象含 `type`。
 - `packageManager`：形如 `<name>@<version>`，`<name>` ∈ `{ npm, pnpm, yarn, bun }`。
+- **CI 与 manifest 一致性**（#9）：
+  - 若 `.github/workflows/*.yml` 里 `pnpm/action-setup` 带 `with: { version: ... }`，**且**任一 `package.json` 含 `packageManager`，→ ❌ 双源冲突（直接挂 release）。
+  - 推荐形态：保留 `package.json#packageManager`，workflow 仅 `uses: pnpm/action-setup@v6`（v4+ 会自动读 manifest）；或反过来 manifest 不写 `packageManager`，版本只在 workflow 钉。
+  - 修复前要把 lockfile / `corepack enable` 等周边一并看一遍：CI 用的 `actions/setup-node` 默认会读 `.nvmrc` / `engines.node`；同时也要注意 `packageManager` 与本机 `corepack` 是否兼容。
 
 ### 4. 自动修复（用户授权后）
 
@@ -87,6 +102,10 @@ Please specify it by one of the following ways:
 - `homepage` 缺失：基于 `repository` 生成 `https://github.com/<owner>/<repo>#readme`。
 - `bugs` 缺失：基于 `repository` 生成 `https://github.com/<owner>/<repo>/issues`。
 - `license` 缺失：默认 `MIT`。若仓库已有 `LICENSE` 文件且首行符合 SPDX 头（如 `MIT License`），按文件内容填。
+- **CI 与 manifest 一致性冲突**（#9）：
+  - 默认偏好保留 manifest 的 `packageManager`（一份权威、corepack 也能复用）；删除 workflow 里 `with: { version: ... }` 行，并在 action 旁留注释指向 manifest 的 `packageManager`。
+  - 若用户反过来希望 CI 钉版本（更老的工程或显式禁掉 corepack），则删除 `package.json` 的 `packageManager` 并把版本写到 workflow。**两种只选一种**，且都要在 diff 里说清楚选了哪条。
+  - 改完后**不**自动重跑 workflow；只报告改动 + 让用户 push 触发。
 
 写入策略：
 
@@ -135,8 +154,19 @@ Please specify it by one of the following ways:
 
 直接给一句话："元数据检查通过，5 项全部 ✅，无需改动。"
 
+### CI 双源冲突
+
+> 仓库：`imba97/ext-kit`
+> 读取：`./.github/workflows/release.yml` + `./package.json`
+
+| 字段 | 状态 | 修复前 | 修复后 |
+| --- | --- | --- | --- |
+| `#9 CI ↔ manifest` | ❌ 冲突 | `pnpm/action-setup@v6 with: { version: 12 }` + `packageManager: "pnpm@12.8.1"` | 删 `with: { version: 12 }`，action 旁加注释指向 `packageManager`；manifest 不改 |
+
+> 这是**#9**特有的"二选一"修复 — 其它 5 项都是补缺失，这里是去冗余。要在报告里说清选了"哪边"作为权威。
+
 ## 相关
 
-- `pnpm/action-setup` 文档：`packageManager` 是其推断 pnpm 版本的三种方式之一。
+- `pnpm/action-setup` 文档：v4+ 会自动从 `package.json#packageManager` 读版本；若同时在 `with.version` 显式声明则视为冲突（`Multiple versions of pnpm specified`）。<https://github.com/pnpm/action-setup>
 - npm package.json 官方字段说明：<https://docs.npmjs.com/cli/v10/configuring-npm/package-json>
 - SPDX 协议列表：<https://spdx.org/licenses/>
