@@ -10,7 +10,7 @@
 | 代码优化 | `code-optimization` | [`skills/code-optimization/SKILL.md`](skills/code-optimization/SKILL.md) | 用 `git status` / `git diff HEAD`（或用户指定基线）梳理全部改动，从优雅性、性能、可靠性、模式与全局复用等维度列出待确认优化项（含原因与预计提升），用户勾选后再改代码。 |
 | 通用视频创作引导 | `video-planning` | [`skills/video-planning/SKILL.md`](skills/video-planning/SKILL.md) | 分阶段单次一问，把想法落成故事、分镜、拍摄清单与剪辑指引；终稿含发布提示与封面图 prompt。 |
 | 发布前清单 | `publish-checklist` | [`skills/publish-checklist/SKILL.md`](skills/publish-checklist/SKILL.md) | 检查并自动修复前端依赖 `package.json` 的 `packageManager` / `repository` / `homepage` / `bugs` / `license`，避免 CI 因缺 pnpm 版本、npm 页面缺链接等元数据缺失而失败。 |
-| 每刻报报销填单 | `maycur-reimbursement` | [`skills/maycur-reimbursement/SKILL.md`](skills/maycur-reimbursement/SKILL.md) | 按本地发票目录整理住宿、高铁、打车、加班餐等票据，判定差旅费/日常费用单类型，依历史已审通过单据的字段与附件规则逐条录入每刻报报销单。 |
+| 每刻报报销填单 | `maycur-reimbursement` | [`skills/maycur-reimbursement/SKILL.md`](skills/maycur-reimbursement/SKILL.md) | 从 QQ 邮箱「发票」应用或本地目录取票据，判定差旅费/日常费用单类型，按实测字段、费用类型树与附件规则逐条录入每刻报报销单。 |
 
 ## 安装方式
 
